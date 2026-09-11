@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Video-based Vital Signs Monitoring & Health Data Platform - Binah.ai</title>
+  <meta name="description" content="Binah.ai's software-based health and wellness monitoring enables businesses to measure real-time health data using smartphone and laptop cameras." />
+  
+  <!-- FontAwesome 4.7.0 for Enterprise Vector Iconography -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha512-SfTiTlX6kk+qitfevl/7LibUOeJWlt9rbyDn92a1DqWOw9vWG2MFoays0sgObmWazO5BQPiFucnnEAjpAB+/Sw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  
+  <!-- Inter Google Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Binah Platform Design System -->
+  <link rel="stylesheet" href="/binah-platform/css/style.css" />
+</head>
+<body>
+
+  <!-- ==========================================================================
+       SITE HEADER: Top Utility Bar (WPML) & Sticky Max Mega Menu
+       ========================================================================== -->
+  <header class="site-header" id="siteHeader">
+    
+    <!-- Top Utility Bar (WPML Language Selector & Support) -->
+    <div class="top-utility-bar">
+      <div class="container">
+        <div class="topbar-left">
+          <span><i class="fa fa-shield" aria-hidden="true"></i> Enterprise Health Data Infrastructure · ISO 13485:2016 Certified</span>
+        </div>
+        <div class="topbar-right">
+          <a href="https://support.binah.ai/binah" class="topbar-link" target="_blank" rel="noopener">Support</a>
+          <a href="#contact" class="topbar-link">Careers</a>
+          
+          <!-- WPML Multi-language Switcher -->
+          <div class="wpml-lang-selector" id="wpmlLangSelector">
+            <div class="wpml-current-lang">
+              <i class="fa fa-globe" aria-hidden="true"></i> English <i class="fa fa-angle-down" aria-hidden="true"></i>
+            </div>
+            <div class="wpml-dropdown" id="wpmlDropdown">
+              <a href="#"><i class="fa fa-check text-cyan"></i> English</a>
+              <a href="#">日本語 (Japanese)</a>
+              <a href="#">Español (Spanish)</a>
+              <a href="#">Deutsch (German)</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sticky Main Navigation with Max Mega Menu -->
+    <div class="main-nav-wrapper" id="mainNavWrapper">
+      <div class="container">
+        
+        <!-- Brand Identity Logo -->
+        <a href="#" class="brand-logo" aria-label="Binah.ai Home">
+          <svg class="brand-logo-svg" viewBox="0 0 160 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="20" cy="20" r="16" stroke="#00B4D8" stroke-width="3" fill="none" />
+            <path d="M12 20 Q16 12 20 20 T28 20" stroke="#00B4D8" stroke-width="2.5" fill="none" stroke-linecap="round" />
+            <text x="44" y="26" fill="#FFFFFF" font-family="Inter, sans-serif" font-size="20" font-weight="800" letter-spacing="-0.5">binah<tspan fill="#00B4D8">.ai</tspan></text>
+          </svg>
+        </a>
+
+        <!-- Desktop Navigation: Max Mega Menu Architecture -->
+        <nav class="nav-menu-desktop" id="navMenuDesktop">
+          
+          <!-- Menu Item: Health Data Platform (Mega Menu) -->
+          <div class="menu-item">
+            <a href="#indicators" class="menu-link">
+              Platform <i class="fa fa-angle-down" aria-hidden="true"></i>
+            </a>
+            <div class="mega-dropdown">
+              <div class="mega-column">
+                <h4>Core SDK Products</h4>
+                <a href="#sdk"><i class="fa fa-code"></i> Binah SDK <span class="mega-badge">v5.11</span></a>
+                <a href="#demo"><i class="fa fa-mobile"></i> Binah Check! App</a>
+                <a href="#demo"><i class="fa fa-refresh"></i> Binah Connect App</a>
+                <a href="#technology"><i class="fa fa-microchip"></i> Polar PPG Integration</a>
+              </div>
+              <div class="mega-column">
+                <h4>Health Indicators</h4>
+                <a href="#indicators"><i class="fa fa-heartbeat"></i> Vital Signs Extraction</a>
+                <a href="#indicators"><i class="fa fa-tachometer"></i> Blood Pressure (rPPG)</a>
+                <a href="#indicators"><i class="fa fa-tint"></i> Bloodless Blood Tests*</a>
+                <a href="#indicators"><i class="fa fa-line-chart"></i> ASCVD 10-Yr Cardiovascular</a>
+              </div>
+              <div class="mega-column">
+                <h4>Clinical & Research</h4>
+                <a href="#compliance"><i class="fa fa-file-text-o"></i> Clinical Validation Studies</a>
+                <a href="#compliance"><i class="fa fa-certificate"></i> CE-MDR Class 1 & FDA Path</a>
+                <a href="#compliance"><i class="fa fa-lock"></i> GDPR & HIPAA Compliance</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Menu Item: Solutions by Industry (Mega Menu) -->
+          <div class="menu-item">
+            <a href="#solutions" class="menu-link">
+              Solutions <i class="fa fa-angle-down" aria-hidden="true"></i>
+            </a>
+            <div class="mega-dropdown" style="min-width: 500px; grid-template-columns: 1fr 1fr;">
+              <div class="mega-column">
+                <h4>Industries Served</h4>
+                <a href="#solutions"><i class="fa fa-umbrella"></i> Insurance & Underwriting</a>
+                <a href="#solutions"><i class="fa fa-hospital-o"></i> Healthcare & Telehealth</a>
+                <a href="#solutions"><i class="fa fa-medkit"></i> Pharma & Decentralized Trials</a>
+                <a href="#solutions"><i class="fa fa-smile-o"></i> Corporate Wellness Programs</a>
+              </div>
+              <div class="mega-column">
+                <h4>Enterprise Validation</h4>
+                <a href="#testimonials"><i class="fa fa-users"></i> Customer Stories (Momentum)</a>
+                <a href="#testimonials"><i class="fa fa-handshake-o"></i> Global Partners (Polar, Sapiens)</a>
+                <a href="#compliance"><i class="fa fa-globe"></i> Global Deployments</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Direct Links -->
+          <div class="menu-item">
+            <a href="#technology" class="menu-link">Technology</a>
+          </div>
+          <div class="menu-item">
+            <a href="#compliance" class="menu-link">Compliance</a>
+          </div>
+          <div class="menu-item">
+            <a href="#contact" class="menu-link">Company</a>
+          </div>
+        </nav>
+
+        <!-- Nav Action CTAs -->
+        <div class="nav-actions">
+          <a href="/index.html" class="btn btn-outline-light" title="Launch Web rPPG Camera Prototype">
+            <i class="fa fa-video-camera" aria-hidden="true"></i> Live Demo POC
+          </a>
+          <a href="#contact" class="btn btn-primary">
+            Request Enterprise Demo
+          </a>
+          <button class="mobile-nav-toggle" id="mobileNavToggle" aria-label="Toggle Mobile Navigation">
+            <i class="fa fa-bars" aria-hidden="true"></i>
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </header>
+
+  <!-- ==========================================================================
+       HERO SECTION: Immersive Canvas Background & Value Proposition
+       ========================================================================== -->
+  <section class="hero-section" id="hero">
+    <!-- Video / Canvas Particle Ambient Simulation -->
+    <div class="hero-video-background">
+      <canvas id="heroBgCanvas"></canvas>
+    </div>
+    <div class="hero-overlay-gradient"></div>
+
+    <div class="container hero-content">
+      
+      <!-- Value Proposition Copy -->
+      <div class="hero-copy-column">
+        <div class="hero-badge-live">
+          <span class="live-pulse-dot"></span> 100% Software-Based rPPG Technology
+        </div>
+        <h1 class="hero-title">
+          Video-based <span class="text-gradient">Vital Signs</span> Monitoring
+        </h1>
+        <p class="hero-subtitle">
+          Binah.ai’s Health Data Platform is an AI-powered, video-based software solution enabling anyone to measure medical-grade physiological indicators using standard smartphone, tablet, or laptop cameras in just 35 to 60 seconds.
+        </p>
+        <div class="hero-actions">
+          <a href="#contact" class="btn btn-primary">
+            <i class="fa fa-envelope-o" aria-hidden="true"></i> Get Enterprise Access
+          </a>
+          <a href="/index.html" class="btn btn-outline-light">
+            <i class="fa fa-play" aria-hidden="true"></i> Launch Live Camera Scanner
+          </a>
+        </div>
+        <div class="hero-stats-row">
+          <div class="hero-stat">
+            <h3>35-60s</h3>
+            <p>Scan Duration</p>
+          </div>
+          <div class="hero-stat">
+            <h3>100%</h3>
+            <p>Software Only (No Hardware)</p>
+          </div>
+          <div class="hero-stat">
+            <h3>20+</h3>
+            <p>Validated Biomarkers</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Interactive RioVizual Simulation Card -->
+      <div class="hero-visual-card">
+        <div class="visual-card-header">
+          <div class="visual-card-title">
+            <i class="fa fa-camera text-cyan" aria-hidden="true"></i> Optical rPPG Scanner
+          </div>
+          <div class="visual-indicator-badge">
+            <i class="fa fa-circle" aria-hidden="true"></i> Active Mesh Tracking
+          </div>
+        </div>
+        
+        <!-- Live Facial Mesh 3D Canvas -->
+        <div class="face-mesh-sim">
+          <canvas id="faceSimCanvas"></canvas>
+          <div class="sim-overlay-scanline"></div>
+        </div>
+
+        <!-- Live Vitals Ticker Grid -->
+        <div class="hero-vitals-mini-grid">
+          <div class="mini-vital-box">
+            <div class="mini-vital-info">
+              <span>Heart Rate</span>
+              <strong id="simHR">74</strong> <small>BPM</small>
+            </div>
+            <i class="fa fa-heartbeat text-cyan" aria-hidden="true"></i>
+          </div>
+          <div class="mini-vital-box">
+            <div class="mini-vital-info">
+              <span>Blood Oxygen</span>
+              <strong id="simSpO2">98</strong> <small>%</small>
+            </div>
+            <i class="fa fa-tint text-cyan" aria-hidden="true"></i>
+          </div>
+          <div class="mini-vital-box">
+            <div class="mini-vital-info">
+              <span>Blood Pressure</span>
+              <strong id="simBP">118/78</strong> <small>mmHg</small>
+            </div>
+            <i class="fa fa-tachometer text-cyan" aria-hidden="true"></i>
+          </div>
+          <div class="mini-vital-box">
+            <div class="mini-vital-info">
+              <span>Stress Index</span>
+              <strong id="simStress" style="font-size: 0.95rem;">Normal (28)</strong>
+            </div>
+            <i class="fa fa-smile-o text-cyan" aria-hidden="true"></i>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       TRUST & CLIENT VALIDATION LOGO BAR
+       ========================================================================== -->
+  <section class="client-logo-bar">
+    <div class="container">
+      <div class="section-heading-sm">Trusted by Global Healthcare, Insurance & Fortune 500 Enterprises</div>
+      <div class="logo-grid">
+        <div class="logo-item"><i class="fa fa-heart"></i> Momentum</div>
+        <div class="logo-item"><i class="fa fa-shield"></i> Polar Electro</div>
+        <div class="logo-item"><i class="fa fa-building-o"></i> Sapiens</div>
+        <div class="logo-item"><i class="fa fa-stethoscope"></i> Datos Health</div>
+        <div class="logo-item"><i class="fa fa-globe"></i> NTT East</div>
+        <div class="logo-item"><i class="fa fa-hospital-o"></i> Together by Renee</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       CORE FEATURES & CAPABILITIES GRID
+       ========================================================================== -->
+  <section class="section section-light" id="features">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-eyebrow">Enterprise Capabilities</div>
+        <h2 class="section-title">End-to-End Health Data Intelligence</h2>
+        <p class="section-description">
+          Binah.ai’s proprietary signal processing and machine learning models translate microscopic facial skin pixel fluctuations into actionable clinical vital signs.
+        </p>
+      </div>
+
+      <div class="features-grid">
+        
+        <!-- Card 1: Touchless Blood Pressure -->
+        <div class="feature-card">
+          <div class="feature-icon-wrapper">
+            <i class="fa fa-tachometer" aria-hidden="true"></i>
+          </div>
+          <h3>Video Blood Pressure Monitoring</h3>
+          <p>
+            Take the pressure off your users. In only 35-60 seconds, individuals can measure Systolic and Diastolic Blood Pressure just by looking at their smartphone, tablet, or laptop camera. No cuffs, wearables, or calibration devices required.
+          </p>
+          <a href="#contact" class="card-footer-link">Explore Blood Pressure SDK <i class="fa fa-arrow-right"></i></a>
+        </div>
+
+        <!-- Card 2: Bloodless Blood Tests -->
+        <div class="feature-card">
+          <div class="feature-icon-wrapper">
+            <i class="fa fa-tint" aria-hidden="true"></i>
+          </div>
+          <h3>Bloodless Blood Test Ability*</h3>
+          <p>
+            Groundbreaking optical estimation of Hemoglobin and Hemoglobin A1C (HbA1c)* directly from facial video analysis, enabling proactive diabetic risk stratification and general population screening without needles.
+          </p>
+          <a href="#contact" class="card-footer-link">Read Research Whitepaper <i class="fa fa-arrow-right"></i></a>
+        </div>
+
+        <!-- Card 3: Cardiovascular Risk (ASCVD) -->
+        <div class="feature-card">
+          <div class="feature-icon-wrapper">
+            <i class="fa fa-heartbeat" aria-hidden="true"></i>
+          </div>
+          <h3>ASCVD 10-Year Risk Detection</h3>
+          <p>
+            Quantify 10-year Atherosclerotic Cardiovascular Disease risk, Heart Age, Mean Arterial Pressure (MAP), and Cardiac Workload for deep insights into arterial stiffness and circulatory efficiency.
+          </p>
+          <a href="#contact" class="card-footer-link">Learn Cardiovascular Insights <i class="fa fa-arrow-right"></i></a>
+        </div>
+
+        <!-- Card 4: Autonomic Stress & Mental Health -->
+        <div class="feature-card">
+          <div class="feature-icon-wrapper">
+            <i class="fa fa-brain" aria-hidden="true"></i>
+          </div>
+          <h3>Baevsky Stress Index & HRV</h3>
+          <p>
+            Continuous analysis of RMSSD, SDNN, and inter-beat intervals (IBI) calculates autonomic nervous system balance across 5 distinct stress levels based on the clinically proven Baevsky Stress Index.
+          </p>
+          <a href="#contact" class="card-footer-link">Discover Stress Analytics <i class="fa fa-arrow-right"></i></a>
+        </div>
+
+        <!-- Card 5: Polar Continuous Monitoring -->
+        <div class="feature-card">
+          <div class="feature-icon-wrapper">
+            <i class="fa fa-bluetooth" aria-hidden="true"></i>
+          </div>
+          <h3>Continuous Bluetooth PPG Sync</h3>
+          <p>
+            Pairing with Polar Electro sensors allows seamless hybrid monitoring: instant video spot-checks when seated combined with continuous wearable telemetry during workouts and daily activity.
+          </p>
+          <a href="#contact" class="card-footer-link">View Polar Partnership <i class="fa fa-arrow-right"></i></a>
+        </div>
+
+        <!-- Card 6: Fall Detection & Geriatric Care -->
+        <div class="feature-card">
+          <div class="feature-icon-wrapper">
+            <i class="fa fa-user-md" aria-hidden="true"></i>
+          </div>
+          <h3>Fall Detection & Aging in Place</h3>
+          <p>
+            Software-driven motion kinematics and biometric trend anomalies flag potential emergencies for senior care and remote patient monitoring, empowering overwhelmed caregivers.
+          </p>
+          <a href="#contact" class="card-footer-link">Explore Elderly Care Solutions <i class="fa fa-arrow-right"></i></a>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       HEALTH INDICATORS SHOWCASE (Category Filter Tabs)
+       ========================================================================== -->
+  <section class="section section-surface" id="indicators">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-eyebrow">Comprehensive Biomarkers</div>
+        <h2 class="section-title">Over 20 Validated Health Indicators</h2>
+        <p class="section-description">
+          A single 35 to 60-second video scan extracts vital signs, autonomic tone, blood pressure parameters, and chronic disease risk indicators.
+        </p>
+      </div>
+
+      <!-- Filter Buttons -->
+      <div class="indicator-tabs-nav">
+        <button class="tab-btn active" data-category="all">All Biomarkers</button>
+        <button class="tab-btn" data-category="vitals">Vital Signs</button>
+        <button class="tab-btn" data-category="cardio">Cardiovascular</button>
+        <button class="tab-btn" data-category="blood">Blood & Metabolic</button>
+        <button class="tab-btn" data-category="stress">Stress & Respiration</button>
+      </div>
+
+      <!-- Indicators Grid -->
+      <div class="indicators-grid" id="indicatorsGrid">
+        
+        <div class="indicator-item" data-category="vitals">
+          <span class="ind-badge">Vital Signs</span>
+          <h4>Heart Rate (Pulse)</h4>
+          <p>Extracted via chromatic rPPG (CHROM & POS) with ±1.5 BPM clinical agreement.</p>
+        </div>
+
+        <div class="indicator-item" data-category="vitals">
+          <span class="ind-badge">Vital Signs</span>
+          <h4>Respiration Rate</h4>
+          <p>Respiratory Sinus Arrhythmia (RSA) modulation tracking from 6 to 30 breaths/min.</p>
+        </div>
+
+        <div class="indicator-item" data-category="vitals">
+          <span class="ind-badge">Vital Signs</span>
+          <h4>Oxygen Saturation (SpO₂)</h4>
+          <p>Dual-channel pulsatile AC/DC absorbance ratio estimation from facial perfusion.</p>
+        </div>
+
+        <div class="indicator-item" data-category="cardio">
+          <span class="ind-badge">Cardiovascular</span>
+          <h4>Blood Pressure</h4>
+          <p>Systolic and Diastolic estimation via pulse wave velocity & morphological contour.</p>
+        </div>
+
+        <div class="indicator-item" data-category="cardio">
+          <span class="ind-badge">Cardiovascular</span>
+          <h4>Cardiac Workload</h4>
+          <p>Quantifies strain on myocardial muscle through Rate Pressure Product (RPP).</p>
+        </div>
+
+        <div class="indicator-item" data-category="cardio">
+          <span class="ind-badge">Cardiovascular</span>
+          <h4>Mean Arterial Pressure (MAP)</h4>
+          <p>Average blood pressure in systemic circulation during a single cardiac cycle.</p>
+        </div>
+
+        <div class="indicator-item" data-category="blood">
+          <span class="ind-badge">Blood & Metabolic</span>
+          <h4>Hemoglobin (Hb)*</h4>
+          <p>Total hemoglobin concentration proxy in blood via spectral skin reflection.</p>
+        </div>
+
+        <div class="indicator-item" data-category="blood">
+          <span class="ind-badge">Blood & Metabolic</span>
+          <h4>Hemoglobin A1C (HbA1c)*</h4>
+          <p>Glycated hemoglobin estimation for long-term glycemic control evaluation.</p>
+        </div>
+
+        <div class="indicator-item" data-category="blood">
+          <span class="ind-badge">Blood & Metabolic</span>
+          <h4>Fasting Blood Glucose Risk</h4>
+          <p>AI model classification of high fasting blood sugar risk indicators.</p>
+        </div>
+
+        <div class="indicator-item" data-category="stress">
+          <span class="ind-badge">Stress & Autonomic</span>
+          <h4>HRV (RMSSD & SDNN)</h4>
+          <p>Root Mean Square of Successive Differences for parasympathetic tone.</p>
+        </div>
+
+        <div class="indicator-item" data-category="stress">
+          <span class="ind-badge">Stress & Autonomic</span>
+          <h4>Baevsky Stress Index</h4>
+          <p>Five-level mathematical index classifying stress from relaxed to severe fatigue.</p>
+        </div>
+
+        <div class="indicator-item" data-category="cardio">
+          <span class="ind-badge">Cardiovascular</span>
+          <h4>10-Yr ASCVD Risk</h4>
+          <p>Atherosclerotic cardiovascular event probability calculation.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       ENTERPRISE SDK & ARCHITECTURE SHOWCASE
+       ========================================================================== -->
+  <section class="section section-dark" id="sdk">
+    <div class="container sdk-architecture-split">
+      
+      <div>
+        <div class="section-eyebrow">Developer Architecture</div>
+        <h2 class="section-title">Integrate the Binah SDK in Minutes</h2>
+        <p class="section-description">
+          Delivered as native SDKs for iOS, Android, Flutter, React Native, and WebAssembly (WASM), Binah.ai integrates into your existing patient portal or mobile health application.
+        </p>
+
+        <div class="sdk-features-list" style="margin-top: 2rem;">
+          <div class="sdk-feature-item">
+            <div class="sdk-feature-icon"><i class="fa fa-cube"></i></div>
+            <div class="sdk-feature-text">
+              <h4>100% On-Device Processing</h4>
+              <p>Video frames are processed directly inside the client device memory. No video or biometric facial imagery ever leaves the phone.</p>
+            </div>
+          </div>
+
+          <div class="sdk-feature-item">
+            <div class="sdk-feature-icon"><i class="fa fa-sliders"></i></div>
+            <div class="sdk-feature-text">
+              <h4>Customizable Scanning UI & Feedback</h4>
+              <p>Full control over camera preview, scanning guides, landmark overlays, and real-time user motion feedback.</p>
+            </div>
+          </div>
+
+          <div class="sdk-feature-item">
+            <div class="sdk-feature-icon"><i class="fa fa-shield"></i></div>
+            <div class="sdk-feature-text">
+              <h4>Enterprise Telemetry & Webhooks</h4>
+              <p>Secure encrypted REST API and WebSocket hooks to transmit encrypted measurement payloads directly into your EHR/CRM.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Code Snippet Mockup -->
+      <div class="sdk-code-mockup">
+        <div class="code-mockup-header">
+          <div class="code-dots">
+            <span class="dot-red"></span>
+            <span class="dot-yellow"></span>
+            <span class="dot-green"></span>
+          </div>
+          <span style="font-size: 0.75rem; color: #94A3B8;">BinahSDK_Integration.ts</span>
+          <i class="fa fa-copy" style="color: #94A3B8; cursor: pointer;"></i>
+        </div>
+        <pre class="code-mockup-body"><code><span class="code-token-keyword">import</span> { BinahSession, HealthMonitor } <span class="code-token-keyword">from</span> <span class="code-token-string">'@binah/sdk'</span>;
+
+<span class="code-token-comment">// 1. Initialize Binah Enterprise Session</span>
+<span class="code-token-keyword">const</span> session = <span class="code-token-keyword">await</span> BinahSession.<span class="code-token-function">create</span>({
+  licenseKey: process.env.BINAH_ENTERPRISE_KEY,
+  processingMode: <span class="code-token-string">'DEVICE_ONLY'</span>,
+  measurementDuration: <span class="code-token-string">45</span> <span class="code-token-comment">// seconds</span>
+});
+
+<span class="code-token-comment">// 2. Start Video-Based Face Scan</span>
+<span class="code-token-keyword">const</span> stream = <span class="code-token-keyword">await</span> navigator.mediaDevices.<span class="code-token-function">getUserMedia</span>({ video: <span class="code-token-keyword">true</span> });
+session.<span class="code-token-function">startMeasurement</span>(stream, {
+  onVitalSign: (metric) => {
+    console.<span class="code-token-function">log</span>(<span class="code-token-string">`HR: ${metric.pulseRate} BPM | SpO2: ${metric.oxygen}%`</span>);
+  },
+  onComplete: (report) => {
+    console.<span class="code-token-function">log</span>(<span class="code-token-string">'Blood Pressure:'</span>, report.bloodPressure);
+    console.<span class="code-token-function">log</span>(<span class="code-token-string">'ASCVD 10-Yr Risk:'</span>, report.ascvdRisk);
+  }
+});</code></pre>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       TRUST, COMPLIANCE & ACCREDITATIONS
+       ========================================================================== -->
+  <section class="section section-dark" id="compliance" style="background: #071326; border-top: 1px solid rgba(255, 255, 255, 0.05);">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-eyebrow">Compliance & Governance</div>
+        <h2 class="section-title">Built for Stringent Enterprise Regulations</h2>
+        <p class="section-description">
+          Binah.ai ensures zero biometric storage, client-side cryptographic isolation, and comprehensive regulatory adherence.
+        </p>
+      </div>
+
+      <div class="compliance-badges-grid">
+        <div class="compliance-card">
+          <div class="compliance-icon"><i class="fa fa-certificate"></i></div>
+          <h4>ISO 13485:2016</h4>
+          <p>Certified Quality Management System for Medical Devices and Software.</p>
+        </div>
+
+        <div class="compliance-card">
+          <div class="compliance-icon"><i class="fa fa-lock"></i></div>
+          <h4>GDPR & CCPA</h4>
+          <p>Complianz GDPR certified. Zero facial image retention or biometric profiling.</p>
+        </div>
+
+        <div class="compliance-card">
+          <div class="compliance-icon"><i class="fa fa-user-secret"></i></div>
+          <h4>HIPAA Security</h4>
+          <p>End-to-end AES-256 data encryption and BAA compliance for US healthcare.</p>
+        </div>
+
+        <div class="compliance-card">
+          <div class="compliance-icon"><i class="fa fa-medkit"></i></div>
+          <h4>CE-MDR Class 1</h4>
+          <p>European Union Medical Device Regulation certification pathway.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       ENTERPRISE CUSTOMER TESTIMONIALS
+       ========================================================================== -->
+  <section class="section section-light" id="testimonials">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-eyebrow">Proven in Production</div>
+        <h2 class="section-title">What Enterprise Leaders Say</h2>
+        <p class="section-description">
+          Leading insurance providers and health networks scale remote monitoring with Binah.ai.
+        </p>
+      </div>
+
+      <div class="testimonials-grid">
+        
+        <div class="testimonial-card">
+          <div class="quote-icon"><i class="fa fa-quote-left"></i></div>
+          <p class="testimonial-text">
+            “With Binah’s support, we have been able to integrate this technology with our own Kimi Screening application, creating a powerful remote vital signs monitoring tool that offers our customers greater insight into their health status.”
+          </p>
+          <div class="testimonial-author">
+            <div class="author-avatar">CA</div>
+            <div class="author-meta">
+              <h5>Carol Atkinson</h5>
+              <p>Exponential Managing Partner, Momentum</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="testimonial-card">
+          <div class="quote-icon"><i class="fa fa-quote-left"></i></div>
+          <p class="testimonial-text">
+            “Binah.ai's AI-based touchless vital signs checks align perfectly with our vision of making routine, important healthcare tasks magically easy for aging Americans and their overwhelmed caregivers alike.”
+          </p>
+          <div class="testimonial-author">
+            <div class="author-avatar">ND</div>
+            <div class="author-meta">
+              <h5>Nick Desai</h5>
+              <p>CEO, Together by Renee</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="testimonial-card">
+          <div class="quote-icon"><i class="fa fa-quote-left"></i></div>
+          <p class="testimonial-text">
+            “This partnership will further deepen our commitment to providing clinicians with the tools they need to practice medicine. Pairing vitals data along with our platform’s automated self-care capabilities will revolutionize care delivery.”
+          </p>
+          <div class="testimonial-author">
+            <div class="author-avatar">UB</div>
+            <div class="author-meta">
+              <h5>Uri Bettesh</h5>
+              <p>Founder & CEO, Datos Health</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       HUBSPOT-READY LEAD CAPTURE & CTA FORM
+       ========================================================================== -->
+  <section class="section cta-hubspot-section" id="contact">
+    <div class="container cta-container-grid">
+      
+      <!-- Value Proposition List -->
+      <div class="cta-text-content">
+        <h2>Start Your Enterprise POC Today</h2>
+        <p>
+          Discover how video-based vital signs can lower claims loss ratios, expand telehealth clinical throughput, and power high-engagement wellness applications.
+        </p>
+        <ul class="cta-perks-list">
+          <li><i class="fa fa-check-circle"></i> Access the native Binah Check! evaluation app</li>
+          <li><i class="fa fa-check-circle"></i> 30-day sandboxed developer SDK license key</li>
+          <li><i class="fa fa-check-circle"></i> Dedicated solutions architect onboarding & validation guide</li>
+          <li><i class="fa fa-check-circle"></i> Complete clinical accuracy documentation (IRB & ClinicalTrials.gov)</li>
+        </ul>
+      </div>
+
+      <!-- HubSpot Lead Generation Form Container -->
+      <div class="hubspot-form-wrapper">
+        <h3>Request an Enterprise Demo</h3>
+        <p class="form-sub">Speak with our digital health integration team</p>
+
+        <form id="hubspotLeadForm">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="hsName">Full Name *</label>
+              <input type="text" id="hsName" class="form-control" placeholder="Jane Doe" required />
+            </div>
+            <div class="form-group">
+              <label for="hsEmail">Work Email *</label>
+              <input type="email" id="hsEmail" class="form-control" placeholder="jane@enterprise.com" required />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="hsCompany">Company / Institution *</label>
+              <input type="text" id="hsCompany" class="form-control" placeholder="Health Corp International" required />
+            </div>
+            <div class="form-group">
+              <label for="hsIndustry">Primary Industry</label>
+              <select id="hsIndustry" class="form-control">
+                <option value="insurance">Insurance & Underwriting</option>
+                <option value="healthcare">Healthcare & Telemedicine</option>
+                <option value="wellness">Corporate & Personal Wellness</option>
+                <option value="pharma">Pharma & Clinical Trials</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="hsNotes">Project Scope / Estimated Monthly Active Users</label>
+            <textarea id="hsNotes" class="form-control" rows="3" placeholder="Tell us about your target application and user volume..."></textarea>
+          </div>
+
+          <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.85rem;">
+            <i class="fa fa-paper-plane" aria-hidden="true"></i> Submit Demo Request
+          </button>
+
+          <p class="form-disclaimer">
+            By submitting, you agree to Binah.ai's <a href="#" style="text-decoration: underline;">Privacy Policy</a> and consent to enterprise communication regarding your request.
+          </p>
+        </form>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       MULTI-COLUMN ENTERPRISE FOOTER
+       ========================================================================== -->
+  <footer class="site-footer">
+    <div class="footer-top">
+      <div class="container footer-columns-grid">
+        
+        <!-- Col 1: Brand & Social Media Suite -->
+        <div class="footer-brand">
+          <svg class="brand-logo-svg" viewBox="0 0 160 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="20" cy="20" r="16" stroke="#00B4D8" stroke-width="3" fill="none" />
+            <path d="M12 20 Q16 12 20 20 T28 20" stroke="#00B4D8" stroke-width="2.5" fill="none" stroke-linecap="round" />
+            <text x="44" y="26" fill="#FFFFFF" font-family="Inter, sans-serif" font-size="20" font-weight="800">binah<tspan fill="#00B4D8">.ai</tspan></text>
+          </svg>
+          <p>
+            Binah.ai’s software-based health and wellness monitoring enables businesses to measure real-time health data using mobile device and laptop cameras.
+          </p>
+          <div class="footer-social-links">
+            <a href="https://www.linkedin.com/company/binah.ai/" class="social-link" target="_blank" rel="noopener" aria-label="LinkedIn"><i class="fa fa-linkedin"></i></a>
+            <a href="https://twitter.com/intent/user?screen_name=binah_ai" class="social-link" target="_blank" rel="noopener" aria-label="X / Twitter"><i class="fa fa-twitter"></i></a>
+            <a href="https://www.instagram.com/binah.ai/" class="social-link" target="_blank" rel="noopener" aria-label="Instagram"><i class="fa fa-instagram"></i></a>
+            <a href="https://www.facebook.com/profile.php?id=100064013439216" class="social-link" target="_blank" rel="noopener" aria-label="Facebook"><i class="fa fa-facebook"></i></a>
+            <a href="https://www.youtube.com/channel/UCiXX_SN0Yftw9NDu2RkkTJg" class="social-link" target="_blank" rel="noopener" aria-label="YouTube"><i class="fa fa-youtube-play"></i></a>
+          </div>
+        </div>
+
+        <!-- Col 2: Platform -->
+        <div class="footer-col">
+          <h4>Platform</h4>
+          <ul>
+            <li><a href="#sdk">Binah SDK</a></li>
+            <li><a href="#demo">Binah Check! App</a></li>
+            <li><a href="#demo">Binah Connect</a></li>
+            <li><a href="#indicators">Health Indicators</a></li>
+            <li><a href="#indicators">Wellness Score</a></li>
+            <li><a href="#technology">Technology & rPPG</a></li>
+          </ul>
+        </div>
+
+        <!-- Col 3: Solutions -->
+        <div class="footer-col">
+          <h4>Solutions</h4>
+          <ul>
+            <li><a href="#solutions">Insurance</a></li>
+            <li><a href="#solutions">Personal & Corporate Wellness</a></li>
+            <li><a href="#solutions">Healthcare & Pharma</a></li>
+            <li><a href="#testimonials">Customer Stories</a></li>
+            <li><a href="#compliance">Partners & Integrations</a></li>
+          </ul>
+        </div>
+
+        <!-- Col 4: Research & Resources -->
+        <div class="footer-col">
+          <h4>Resources</h4>
+          <ul>
+            <li><a href="#compliance">Clinical Research</a></li>
+            <li><a href="#compliance">Whitepapers & Patents</a></li>
+            <li><a href="#compliance">In the News</a></li>
+            <li><a href="#compliance">Blog Articles</a></li>
+            <li><a href="https://support.binah.ai/binah" target="_blank" rel="noopener">Developer Docs</a></li>
+          </ul>
+        </div>
+
+        <!-- Col 5: Company -->
+        <div class="footer-col">
+          <h4>Company</h4>
+          <ul>
+            <li><a href="#contact">About Us</a></li>
+            <li><a href="#contact">Careers <span class="mega-badge">Hiring</span></a></li>
+            <li><a href="#contact">Leadership & Board</a></li>
+            <li><a href="#contact">Contact Us</a></li>
+            <li><a href="#compliance">ISO 13485:2016</a></li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Bottom Bar: Copyright, Legal & Complianz Links -->
+    <div class="footer-bottom">
+      <div class="container">
+        <p>© Binah.ai All rights reserved 2026. Enterprise Health Data Platform.</p>
+        <div class="footer-legal-links">
+          <a href="#compliance">Privacy Policy</a>
+          <a href="#compliance">Terms of Service</a>
+          <a href="#compliance">Cookie Preferences</a>
+          <a href="#compliance">Security Governance</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ==========================================================================
+       COMPLIANZ GDPR COOKIE CONSENT BANNER
+       ========================================================================== -->
+  <div class="complianz-cookie-banner" id="complianzCookieBanner">
+    <div class="cmplz-header">
+      <i class="fa fa-shield text-cyan" aria-hidden="true"></i> Privacy & Cookie Notice
+    </div>
+    <div class="cmplz-body">
+      We use cookies and telemetry technologies to optimize website performance, ensure GDPR compliance, and analyze enterprise traffic. Consenting enables personalized technical experiences.
+    </div>
+    <div class="cmplz-buttons">
+      <button class="cmplz-btn cmplz-btn-accept" id="cmplzAccept">Accept All</button>
+      <button class="cmplz-btn cmplz-btn-deny" id="cmplzDeny">Manage Preferences</button>
+    </div>
+  </div>
+
+  <!-- jQuery 3.x and Easing for smooth animations -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+  
+  <!-- Binah Platform Interactive Core -->
+  <script src="/binah-platform/js/main.js"></script>
+</body>
+</html>

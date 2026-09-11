@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EROS Wellness AI — rPPG Heart Rate Monitor</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="stylesheet" href="styles.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+  <!-- ═══ HEADER ═══════════════════════════════════════════ -->
+  <header class="app-header">
+    <div class="header-logo">
+      <div class="pulse-icon">❤️</div>
+      <div>
+        <h1>EROS Wellness AI</h1>
+        <p class="tagline">Remote Photoplethysmography · Non-contact Vital Signs</p>
+      </div>
+    </div>
+    <div class="header-right">
+      <div class="meta-pills">
+        <div class="meta-pill">
+          <span class="meta-label">ALGO</span>
+          <span class="meta-value" id="algoLabel">—</span>
+        </div>
+        <div class="meta-pill">
+          <span class="meta-label">FPS</span>
+          <span class="meta-value" id="fpsValue">—</span>
+        </div>
+      </div>
+      <div class="header-badge">
+        <span class="badge-dot" id="statusDot"></span>
+        <span id="statusText">Initialising…</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ═══ MAIN ══════════════════════════════════════════════ -->
+  <main class="app-main">
+
+    <!-- LEFT COLUMN -->
+    <section class="video-panel">
+
+      <!-- Camera selector -->
+      <div class="camera-selector-row">
+        <label class="cam-label" for="cameraSelect">📷 Camera</label>
+        <select id="cameraSelect" class="cam-select">
+          <option value="">Loading cameras…</option>
+        </select>
+      </div>
+
+      <!-- Video -->
+      <div class="video-wrapper">
+        <video id="webcamVideo" autoplay muted playsinline></video>
+        <canvas id="overlayCanvas"></canvas>
+        <canvas id="roiPreview"></canvas>
+      </div>
+
+      <!-- Diagnostic banner (hidden until needed) -->
+      <div id="diagBanner" class="diag-banner" style="display:none"></div>
+
+      <!-- Camera quality diagnostics row -->
+      <div class="cam-diagnostics-row">
+        <div class="cam-diag-cell">
+          <span class="cam-diag-label">Quality</span>
+          <span class="cam-grade-value" id="camGrade">—</span>
+        </div>
+        <div class="cam-diag-cell">
+          <span class="cam-diag-label">Brightness</span>
+          <span class="cam-diag-value" id="camBrightness">—</span>
+        </div>
+        <div class="cam-diag-cell">
+          <span class="cam-diag-label">Noise</span>
+          <span class="cam-diag-value" id="camNoise">—</span>
+        </div>
+        <div class="cam-diag-cell">
+          <span class="cam-diag-label">Skin%</span>
+          <span class="cam-diag-value" id="camSkin">—</span>
+        </div>
+        <div class="cam-diag-cell">
+          <span class="cam-diag-label">Res.</span>
+          <span class="cam-diag-value" id="camRes">—</span>
+        </div>
+      </div>
+
+      <!-- Pixel quality bar -->
+      <div class="pix-quality-container">
+        <div class="pix-quality-label-row">
+          <span>Pixel quality (valid skin pixels)</span>
+          <span id="pixQualityLabel"></span>
+        </div>
+        <div class="pix-quality-track">
+          <div class="pix-quality-fill" id="pixQualityBar"></div>
+        </div>
+      </div>
+
+      <!-- Motion badge -->
+      <div class="motion-badge-container">
+        <span id="motionBadge" class="motion-badge">—</span>
+      </div>
+
+      <!-- Scan bar -->
+      <div class="scan-bar-container">
+        <div class="scan-bar-label">
+          <span>Signal Collection</span>
+          <span id="scanSeconds">0 / 30 s</span>
+        </div>
+        <div class="scan-bar-track">
+          <div class="scan-bar-fill" id="scanBarFill"></div>
+        </div>
+      </div>
+
+      <div class="video-controls">
+        <button id="startBtn" class="btn btn-primary">▶ Start Scan</button>
+        <button id="resetBtn" class="btn btn-ghost" disabled>↺ Reset</button>
+      </div>
+    </section>
+
+    <!-- RIGHT COLUMN -->
+    <section class="metrics-panel">
+
+      <!-- Vitals Grid — 3 columns × 2 rows = 6 cards -->
+      <div class="vitals-grid">
+
+        <div class="vital-card" id="cardHR">
+          <div class="vital-icon">💓</div>
+          <div class="vital-value" id="hrValue">--</div>
+          <div class="vital-unit">BPM</div>
+          <div class="vital-label">Heart Rate</div>
+          <div class="vital-status" id="hrStatus">—</div>
+          <div class="vital-confidence" id="hrConfidence"></div>
+        </div>
+
+        <div class="vital-card" id="cardHRV">
+          <div class="vital-icon">📈</div>
+          <div class="vital-value" id="hrvValue">--</div>
+          <div class="vital-unit">ms</div>
+          <div class="vital-label">HRV (RMSSD)</div>
+          <div class="vital-status" id="hrvStatus">—</div>
+        </div>
+
+        <div class="vital-card" id="cardSPO2">
+          <div class="vital-icon">🩸</div>
+          <div class="vital-value" id="spo2Value">--</div>
+          <div class="vital-unit">%</div>
+          <div class="vital-label">SpO₂ est.</div>
+          <div class="vital-status" id="spo2Status">—</div>
+        </div>
+
+        <div class="vital-card" id="cardBreath">
+          <div class="vital-icon">🌬️</div>
+          <div class="vital-value" id="breathValue">--</div>
+          <div class="vital-unit">br/min</div>
+          <div class="vital-label">Breathing Rate</div>
+          <div class="vital-status" id="breathStatus">—</div>
+        </div>
+
+        <div class="vital-card" id="cardStress">
+          <div class="vital-icon">🧠</div>
+          <div class="vital-value" id="stressValue">--</div>
+          <div class="vital-unit">/100</div>
+          <div class="vital-label">Stress Index</div>
+          <div class="vital-status" id="stressStatus">—</div>
+        </div>
+
+        <div class="vital-card" id="cardSNR">
+          <div class="vital-icon">📡</div>
+          <div class="vital-value" id="snrValue">--</div>
+          <div class="vital-unit">dB</div>
+          <div class="vital-label">Signal SNR</div>
+          <div class="vital-status" id="snrStatus">—</div>
+        </div>
+
+      </div>
+
+      <!-- Charts -->
+      <div class="chart-card">
+        <div class="chart-title">rPPG Pulse Waveform (filtered)</div>
+        <canvas id="waveformChart" height="75"></canvas>
+      </div>
+
+      <div class="chart-card">
+        <div class="chart-title">Heart Rate Trend · last 40 estimates (± confidence band)</div>
+        <canvas id="trendChart" height="75"></canvas>
+      </div>
+
+      <div class="chart-card">
+        <div class="chart-title">FFT Frequency Spectrum · 0.7–4 Hz  (🟡 peak · 🟣 harmonic)</div>
+        <canvas id="spectrumChart" height="75"></canvas>
+      </div>
+
+      <div class="chart-card">
+        <div class="chart-title">Raw RGB Channel Averages from ROI</div>
+        <canvas id="rgbChart" height="65"></canvas>
+      </div>
+
+      <!-- Tips -->
+      <div class="info-card">
+        <h3>📋 Camera & Lighting Tips</h3>
+        <ul>
+          <li><strong>External webcam</strong> (e.g. Logitech C920) gives dramatically better results than a built-in laptop camera — higher resolution, better low-light sensor.</li>
+          <li>Sit <strong>facing a lamp</strong> — even, frontal light is critical. Avoid windows behind you.</li>
+          <li>The <strong>Quality</strong> indicator above shows the live camera assessment. Aim for 🟢 Good.</li>
+          <li>If signal is poor after 30 s, the app automatically <strong>extends to 60 s</strong>.</li>
+          <li>Use the <strong>camera dropdown</strong> to switch between laptop and external webcam without reloading.</li>
+        </ul>
+        <p class="disclaimer">⚠️ Proof-of-concept only. Not a certified medical device. SpO₂ requires IR illumination for clinical accuracy. Do not use for medical decisions.</p>
+      </div>
+
+    </section>
+  </main>
+
+  <!-- ═══ RESULT MODAL ══════════════════════════════════════ -->
+  <div class="modal-backdrop" id="resultModal" style="display:none">
+    <div class="modal">
+      <div class="modal-header">
+        <span class="modal-icon">🩺</span>
+        <h2>Scan Complete — Health Report</h2>
+      </div>
+      <div class="modal-body" id="modalBody"></div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" onclick="closeModal()">✓ Done</button>
+        <button class="btn btn-ghost" onclick="downloadReport()">⬇ Download Report</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/signal.js"></script>
+  <script src="js/charts.js"></script>
+  <script src="js/roi.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
