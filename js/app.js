@@ -167,73 +167,110 @@ function onResetClicked() {
 /* ══════════════════════════════════════════════════════════
    WEBCAM INIT
    ══════════════════════════════════════════════════════════
-   Tries ideal constraints first. If camera can't deliver ideal,
-   browser automatically negotiates — we read the actual track
-   settings after opening to show the user what they actually got.
+/* ══════════════════════════════════════════════════════════
+   WEBCAM INIT
+   ══════════════════════════════════════════════════════════
+   Mobile-friendly camera acquisition:
+   - Tries front-facing user camera with flexible constraints
+   - Falls back gracefully if 720p/1080p is unavailable on mobile
+   - Uses requestVideoFrameCallback / requestAnimationFrame loop
+     directly with state.faceMesh.send({ image: video })
+   - Eliminates duplicate MediaPipe Camera start conflicts that
+     cause "NotReadableError: Could not start video source"
 */
+let animFrameId = null;
+
 async function startSession() {
   setStatus('active', 'Requesting camera…');
   startBtn.disabled = true;
 
   try {
-    // Build video constraints — use selected device if available
-    const videoConstraints = {
-      width:     { ideal: 1280, min: 320 },
-      height:    { ideal: 720,  min: 240 },
-      frameRate: { ideal: 30,   min: 15  },
-      facingMode: 'user',
-    };
+    // 1. Clean up any previous session/tracks first to release camera hardware
+    stopSession();
+
+    // 2. Build mobile-first video constraints
+    let videoConstraints;
     if (state.selectedDeviceId) {
-      videoConstraints.deviceId = { exact: state.selectedDeviceId };
+      videoConstraints = { deviceId: { exact: state.selectedDeviceId } };
+    } else {
+      // Mobile-friendly constraints: ideal 640x480 first to avoid hardware lockups on mobile chips
+      videoConstraints = {
+        facingMode: 'user',
+        width: { ideal: 640, max: 1280 },
+        height: { ideal: 480, max: 720 }
+      };
     }
 
-    state.stream = await navigator.mediaDevices.getUserMedia({
-      video: videoConstraints,
-      audio: false,
-    });
+    try {
+      state.stream = await navigator.mediaDevices.getUserMedia({
+        video: videoConstraints,
+        audio: false,
+      });
+    } catch (constraintErr) {
+      console.warn('Initial constraints failed, falling back to basic video stream:', constraintErr);
+      // Fallback: minimal unconstrained video
+      state.stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: 'user' },
+        audio: false
+      });
+    }
 
-    // Re-enumerate now that we have permission (browser reveals labels)
+    // Re-enumerate cameras now that user granted permission
     await enumerateCameras();
 
     video.srcObject = state.stream;
-    await new Promise(res => { video.onloadedmetadata = res; });
+    video.setAttribute('playsinline', 'true');
+    video.setAttribute('webkit-playsinline', 'true');
+    video.muted = true;
+
+    await new Promise((resolve) => {
+      if (video.readyState >= 2) {
+        resolve();
+      } else {
+        video.onloadeddata = () => resolve();
+      }
+    });
+
     await video.play();
 
     // Read actual track settings
-    const track    = state.stream.getVideoTracks()[0];
-    const settings = track.getSettings();
-    state.cameraResolution = { w: settings.width || video.videoWidth, h: settings.height || video.videoHeight };
-    const actualFPS        = settings.frameRate || 30;
-    state.fps              = actualFPS;
+    const track = state.stream.getVideoTracks()[0];
+    const settings = track.getSettings ? track.getSettings() : {};
+    const vw = video.videoWidth || settings.width || 640;
+    const vh = video.videoHeight || settings.height || 480;
+    state.cameraResolution = { w: vw, h: vh };
+    state.fps = settings.frameRate || 30;
 
     // Update camera info panel
-    updateCameraInfoPanel(track.label, settings);
+    updateCameraInfoPanel(track.label || 'Front Camera', settings);
 
-    const vw = video.videoWidth, vh = video.videoHeight;
-    overlayCanvas.width  = vw; overlayCanvas.height = vh;
-    state.hiddenCtx.canvas.width  = vw;
+    overlayCanvas.width = vw;
+    overlayCanvas.height = vh;
+    state.hiddenCtx.canvas.width = vw;
     state.hiddenCtx.canvas.height = vh;
 
-    state.faceMesh = new FaceMesh({
-      locateFile: f => `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${f}`,
-    });
-    state.faceMesh.setOptions({
-      maxNumFaces: 1,
-      refineLandmarks: true,
-      minDetectionConfidence: 0.5,
-      minTrackingConfidence:  0.5,
-    });
-    state.faceMesh.onResults(onFaceMeshResults);
+    // Initialize FaceMesh if not yet initialized
+    if (!state.faceMesh) {
+      state.faceMesh = new FaceMesh({
+        locateFile: f => `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${f}`,
+      });
+      state.faceMesh.setOptions({
+        maxNumFaces: 1,
+        refineLandmarks: true,
+        minDetectionConfidence: 0.5,
+        minTrackingConfidence: 0.5,
+      });
+      state.faceMesh.onResults(onFaceMeshResults);
+      await state.faceMesh.initialize();
+    }
 
-    state.camera = new Camera(video, {
-      onFrame: async () => { await state.faceMesh.send({ image: video }); },
-      width: vw, height: vh,
-    });
-    await state.camera.start();
-
-    state.rBuf = []; state.gBuf = []; state.bBuf = [];
+    // Reset buffer state
+    state.rBuf = [];
+    state.gBuf = [];
+    state.bBuf = [];
     state.frameTs = [];
-    state.motionFrames = 0; state.totalFrames = 0;
+    state.motionFrames = 0;
+    state.totalFrames = 0;
     state.bestSNR = -Infinity;
     state.scanExtended = false;
     state.pixQualityHistory = [];
@@ -241,16 +278,48 @@ async function startSession() {
     state.startTime = performance.now();
     state.lastEstMs = 0;
 
+    // Direct, native frame processing loop (avoids Camera() class NotReadableError)
+    let isProcessing = false;
+    const processLoop = async () => {
+      if (state.mode !== 'scanning') return;
+
+      if (!isProcessing && video.readyState >= 2 && !video.paused && !video.ended) {
+        isProcessing = true;
+        try {
+          await state.faceMesh.send({ image: video });
+        } catch (e) {
+          console.error('FaceMesh frame send error:', e);
+        } finally {
+          isProcessing = false;
+        }
+      }
+
+      if ('requestVideoFrameCallback' in video) {
+        video.requestVideoFrameCallback(processLoop);
+      } else {
+        animFrameId = requestAnimationFrame(processLoop);
+      }
+    };
+
+    if ('requestVideoFrameCallback' in video) {
+      video.requestVideoFrameCallback(processLoop);
+    } else {
+      animFrameId = requestAnimationFrame(processLoop);
+    }
+
     setStatus('scanning', 'Scanning — hold still…');
     resetBtn.disabled = false;
 
   } catch (err) {
     console.error('Camera error:', err);
-    const tip = err.name === 'NotAllowedError'
-      ? 'Camera permission denied. Allow access in browser settings.'
-      : err.name === 'NotFoundError'
-      ? 'No camera found. Connect a webcam and try again.'
-      : `Camera error: ${err.message}`;
+    let tip = `Camera error: ${err.message}`;
+    if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
+      tip = 'Camera permission denied. Tap the lock icon in the browser address bar to allow camera access.';
+    } else if (err.name === 'NotReadableError' || err.name === 'TrackStartError') {
+      tip = 'Camera in use by another app or tab. Please close other camera tabs/apps and refresh.';
+    } else if (err.name === 'NotFoundError' || err.name === 'DevicesNotFoundError') {
+      tip = 'No front-facing camera detected on this device.';
+    }
     setStatus('error', tip);
     updateDiagnosticBanner('error', '❌ ' + tip);
     startBtn.disabled = false;
@@ -258,12 +327,20 @@ async function startSession() {
 }
 
 function stopSession() {
-  try { state.camera?.stop(); }   catch(e) {}
-  try { state.faceMesh?.close(); } catch(e) {}
-  state.stream?.getTracks().forEach(t => t.stop());
+  if (animFrameId) {
+    cancelAnimationFrame(animFrameId);
+    animFrameId = null;
+  }
+  if (state.stream) {
+    state.stream.getTracks().forEach(t => {
+      try { t.stop(); } catch(e) {}
+    });
+  }
   video.srcObject = null;
-  state.camera = null; state.faceMesh = null; state.stream = null;
-  state.rBuf = []; state.gBuf = []; state.bBuf = [];
+  state.stream = null;
+  state.rBuf = [];
+  state.gBuf = [];
+  state.bBuf = [];
   state.frameTs = [];
   state.mode = 'idle';
 }
