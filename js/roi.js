@@ -57,10 +57,10 @@ function analyzeFrameQuality(imageData, videoW, videoH) {
   const noisePerPixel  = totalPix > 1 ? noiseAcc / (totalPix - 1) : 0;
 
   let grade = 'good';
-  if (meanBrightness < 55)  grade = 'dim';
-  else if (meanBrightness > 210) grade = 'bright';
-  else if (noisePerPixel > 18)   grade = 'noisy';
-  else if (skinRatio < 0.2)      grade = 'poor';
+  if (meanBrightness < 35)  grade = 'dim';
+  else if (meanBrightness > 225) grade = 'bright';
+  else if (noisePerPixel > 25)   grade = 'noisy';
+  else if (skinRatio < 0.08)     grade = 'poor';
 
   return { meanBrightness, skinRatio, noisePerPixel, grade };
 }
@@ -228,11 +228,11 @@ function extractROIPixels(imageData, landmarks, videoW, videoH, cameraQuality) {
 
   const data = imageData.data;
 
-  // Adaptive thresholds based on camera brightness
-  const isDim       = cameraQuality?.grade === 'dim';
-  const pixMinSum   = isDim ? 50 : 90;    // relax for dim cameras
-  const pixSatMax   = cameraQuality?.grade === 'bright' ? 220 : 238;
-  const skinRMin    = isDim ? 40 : 60;
+  // Adaptive thresholds based on camera brightness and diverse skin tones
+  const isDim       = cameraQuality?.grade === 'dim' || (cameraQuality?.meanBrightness || 100) < 90;
+  const pixMinSum   = isDim ? 30 : 55;     // relaxed for indoor and lower-lit environments
+  const pixSatMax   = cameraQuality?.grade === 'bright' ? 225 : 248;
+  const skinRMin    = isDim ? 25 : 38;
 
   let totalR = 0, totalG = 0, totalB = 0, count = 0, rejected = 0;
 
@@ -269,11 +269,12 @@ function extractROIPixels(imageData, landmarks, videoW, videoH, cameraQuality) {
           const idx = (py * videoW + px) * 4;
           const r = data[idx], g = data[idx + 1], b = data[idx + 2];
 
-          // Quality gate
+          // Quality gate — inclusive of Fitzpatrick skin types I–VI
           if (r + g + b < pixMinSum) { rejected++; continue; }
           if (r > pixSatMax || g > pixSatMax) { rejected++; continue; }
           if (r < skinRMin) { rejected++; continue; }
-          if (b > r)  { rejected++; continue; }  // not skin
+          // Relaxed blue rejection: allow higher blue ratios under cool/fluorescent or darker skin lighting
+          if (b > r * 1.15)  { rejected++; continue; }
 
           totalR += r; totalG += g; totalB += b;
           count++;
@@ -283,7 +284,7 @@ function extractROIPixels(imageData, landmarks, videoW, videoH, cameraQuality) {
   }
 
   const total = count + rejected;
-  if (count < 50) return null;  // not enough quality pixels
+  if (count < 20) return null;  // relaxed threshold for robust signal collection
 
   return {
     r: totalR / count,

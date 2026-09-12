@@ -18,12 +18,12 @@
 ════════════════════════════════════════════════════════════ */
 const SCAN_DURATION_S    = 30;     // base scan duration
 const SCAN_MAX_S         = 60;     // auto-extend up to 60s if signal is poor
-const ESTIMATE_EVERY_MS  = 1200;
-const MIN_SAMPLES        = 75;
+const ESTIMATE_EVERY_MS  = 1000;
+const MIN_SAMPLES        = 45;     // 1.5s of samples sufficient to start real-time estimation
 const MAX_BUFFER_S       = 90;
-const MOTION_REJECT_THR  = 0.30;
-const SNR_ACCEPT_THR_DB  = 1.0;
-const SNR_EXTEND_THR_DB  = 3.0;   // if best SNR stays < this after 30s → auto-extend
+const MOTION_REJECT_THR  = 0.40;   // allow natural subtle breathing motion on mobile
+const SNR_ACCEPT_THR_DB  = -0.5;   // sensitive threshold suitable for mobile cameras & indoor light
+const SNR_EXTEND_THR_DB  = 2.0;   // if best SNR stays < this after 30s → auto-extend
 
 /* ══════════════════════════════════════════════════════════
    STATE
@@ -240,6 +240,12 @@ async function startSession() {
     const vh = video.videoHeight || settings.height || 480;
     state.cameraResolution = { w: vw, h: vh };
     state.fps = settings.frameRate || 30;
+
+    // Dynamically set video wrapper aspect ratio to match camera feed exactly
+    const wrapper = document.querySelector('.video-wrapper');
+    if (wrapper) {
+      wrapper.style.aspectRatio = `${vw} / ${vh}`;
+    }
 
     // Update camera info panel
     updateCameraInfoPanel(track.label || 'Front Camera', settings);
